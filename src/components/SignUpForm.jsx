@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import userService from "../services/user";
 import "../index.css";
+import FormTextField from "./FormTextField";
+import FormDateField from "./FormDateField";
+import FormSelectField from "./FormSelectField";
+import Button from "./Button";
+import FormFieldContainer from "./FormFieldContainer";
 
 const SignUpForm = () => {
   const [firstName, setFirstName] = useState("");
@@ -82,123 +87,28 @@ const SignUpForm = () => {
     }
   };
 
-  // USE BOOTSTRAP CLASSES FOR FORM
   return (
     <form
       onSubmit={handleSignUp}
-      className="flex flex-col w-3/4 p-10 bg-emerald-500 rounded-md gap-6 border-emerald-900 border-4"
+      className="flex flex-col w-3/4 p-10 bg-emerald-500 rounded-md gap-8 border-emerald-900 border-4"
     >
-      <div className="flex flex-col text-emerald-950 text-xl font-extrabold">
-        <h1>Welcome to Capsule!</h1>
-        <h3>Let's get you set up with an account.</h3>
-      </div>
       <div className="flex flex-col gap-3">
-        <div className="flex flex-col gap-1">
-          <label className="text-emerald-100 font-bold">
-            Enter your first name
-          </label>
-          <input
-            type="text"
-            value={firstName}
-            onChange={({ target }) => setFirstName(target.value)}
-            className="rounded-sm py-0.5 px-1 border-2 border-emerald-800"
-          ></input>
-        </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-emerald-100 font-bold">
-            Enter your last name
-          </label>
-          <input
-            type="text"
-            value={lastName}
-            onChange={({ target }) => setLastName(target.value)}
-            className="rounded-sm py-0.5 px-1 border-2 border-emerald-800"
-          ></input>
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label className="text-emerald-100 font-bold">
-            Enter your date of birth
-          </label>
-          <input
-            type="date"
-            value={birthDate}
-            onChange={({ target }) => setBirthDate(target.value)}
-            className="rounded-sm py-0.5 px-1 border-2 border-emerald-800"
-          ></input>
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label className="text-emerald-100 font-bold">Enter your email</label>
-          <input
-            type="text"
-            value={email}
-            onChange={({ target }) => setEmail(target.value)}
-            className="rounded-sm py-0.5 px-1 border-2 border-emerald-800"
-          ></input>
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label className="text-emerald-100 font-bold">
-            Enter your password
-          </label>
-          <input
-            type="password"
-            value={password}
-            onChange={({ target }) => setPassword(target.value)}
-            className="rounded-sm py-0.5 px-1 border-2 border-emerald-800"
-          ></input>
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label className="text-emerald-100 font-bold">
-            Confirm your password
-          </label>
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={({ target }) => setConfirmPassword(target.value)}
-            className="rounded-sm py-0.5 px-1 border-2 border-emerald-800"
-          ></input>
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label className="text-emerald-100 font-bold">Choose a role</label>
-          <select
-            value={role}
-            name="roles"
-            onChange={({ target }) => setRole(target.value)}
-            className="rounded-sm p-1 border-2 border-emerald-800"
-          >
-            <option value="">-- Choose a role --</option>
-            <option value="adolescent">Adolescent</option>
-            <option value="parent">Parent</option>
-            <option value="professionel">Professionnel</option>
-          </select>
-        </div>
-
-        <div className="flex flex-col gap-1">
-          <label className="text-emerald-100 font-bold">Choose a title</label>
-          <select
-            value={title}
-            name="titles"
-            onChange={({ target }) => setTitle(target.value)}
-            className="rounded-sm p-1 border-2 border-emerald-800"
-          >
-            <option value="">-- Choose a title --</option>
-            <option value="Mr.">Mr.</option>
-            <option value="Mrs.">Mrs.</option>
-            <option value="Dr.">Dr.</option>
-            <option value="Jd.">Jd.</option>
-          </select>
-        </div>
+        <h1 className="text-5xl text-emerald-950 font-extrabold">Welcome to Capsule!</h1>
+        <h4 className="text-2xl text-emerald-800 font-bold">Let's get you set up with an account.</h4>
       </div>
-      <button
-        type="submit"
-        className="rounded-lg bg-emerald-100 py-4 text-emerald-800 font-extrabold shadow-lg"
-      >
-        Submit
-      </button>
+      
+      <FormFieldContainer styles={"flex flex-col gap-3"}>
+        <FormTextField type={"text"} label={"Enter your first name"} value={firstName} handleChange={setFirstName}></FormTextField>
+        <FormTextField type={"text"} label={"Enter your last name"} value={lastName} handleChange={setLastName}></FormTextField>
+        <FormDateField type={"text"} label={"Enter your date of birth"} value={birthDate} handleChange={setBirthDate}></FormDateField>
+        <FormTextField type={"text"} label={"Enter your email"} value={email} handleChange={setEmail}></FormTextField>
+        <FormTextField type={"password"} label={"Enter your password"} value={password} handleChange={setPassword}></FormTextField>
+        <FormTextField type={"password"} label={"Confirm your password"} value={confirmPassword} handleChange={setConfirmPassword}></FormTextField>
+        <FormSelectField label={"Choose a role"} value={role} name={"roles"} handleChange={setRole} options={["adolescent", "parent", "professionel"]}></FormSelectField>
+        <FormSelectField label={"Choose a title"} value={title} name={"titles"} handleChange={setTitle} options={["mr.", "mrs.", "dr.", "jd."]}></FormSelectField>
+      </FormFieldContainer>
+
+      <Button type={"submit"} styles={"rounded-lg bg-emerald-100 py-4 text-emerald-800 font-extrabold shadow-lg"} text={"Submit"}></Button>
     </form>
   );
 };
