@@ -36,6 +36,14 @@ app.post("/api/users", (request, response) => {
     profilePicture: "",
     phoneMobile: "",
     phoneOffice: "",
+    title: "",
+    profession: "",
+    socid: "",
+    street1: "",
+    street2: "",
+    city: "",
+    postalCode: "",
+    country: "",
   };
   users.push(newUser);
   response.status(200).json(users);
