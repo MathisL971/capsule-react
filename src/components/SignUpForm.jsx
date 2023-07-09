@@ -1,32 +1,34 @@
-import React, { useState } from "react";
-//import userService from "../services/user";
+import React from "react";
+import userService from "../services/user";
 import "../index.css";
 import FormField from "./FormField";
 
 import { Formik, Form } from "formik";
+import moment from "moment-timezone";
 import * as Yup from "yup";
 
 const SignUpForm = () => {
   const fields = [
+    {
+      name: "role",
+      as: "select",
+      label: "Select a role",
+      options: ["adolescent", "parent", "professionel"],
+    },
+    {
+      name: "username",
+      type: "text",
+      label: "Choose a username",
+    },
     {
       name: "email",
       type: "email",
       label: "Enter your email",
     },
     {
-      name: "firstName",
-      type: "text",
-      label: "First Name",
-    },
-    {
-      name: "lastName",
-      type: "text",
-      label: "Last Name",
-    },
-    {
       name: "password",
       type: "password",
-      label: "Password",
+      label: "Choose a password",
     },
     {
       name: "confirmPassword",
@@ -34,45 +36,29 @@ const SignUpForm = () => {
       label: "Confirm password",
     },
     {
+      name: "firstName",
+      type: "text",
+      label: "Enter your first name",
+    },
+    {
+      name: "lastName",
+      type: "text",
+      label: "Enter your last name",
+    },
+    {
       name: "birthDate",
       type: "date",
-      label: "Birth Date",
+      label: "Select your birth date",
     },
     {
-      name: "bio",
-      type: "text",
-      label: "Bio",
-      as: "textarea",
-    },
-    {
-      name: "profilePicture",
-      type: "file",
-      label: "Profile picture",
-    },
-    {
-      name: "username",
-      type: "text",
-      label: "Username",
-    },
-    {
-      name: "phoneMobile",
-      type: "text",
-      label: "Mobile phone number",
-    },
-    {
-      name: "phoneOffice",
-      type: "text",
-      label: "Office phone number",
-    },
-    {
-      name: "role",
+      name: "timezone",
       as: "select",
-      label: "Select a role",
-      options: ["adolescent", "parent", "professionel"],
+      label: "Select a time zone",
+      options: moment.tz.names().map((zone) => {
+        return `${zone} (${moment.tz(zone).format("Z")})`;
+      }),
     },
   ];
-
-  const [complete, setComplete] = useState(false);
 
   return (
     <Formik
@@ -80,21 +66,63 @@ const SignUpForm = () => {
         firstName: "",
         lastName: "",
         email: "",
+        password: "",
+        confirmPassword: "",
+        birthDate: "",
+        username: "",
+        role: "",
+        timezone: "",
       }}
       validationSchema={Yup.object({
+        role: Yup.string().required("Required"),
+        timezone: Yup.string().required("Required"),
+        username: Yup.string()
+          .max(15, "Username must be 15 characters or less")
+          .required("Required")
+          .test("username-unique", "Username already exists", async (value) => {
+            const users = await userService.getAll();
+            return users.every((user) => user.username !== value);
+          }),
+        email: Yup.string()
+          .email("Invalid email address")
+          .required("Required")
+          .test("email-unique", "Email is already taken", async (value) => {
+            const users = await userService.getAll();
+            return users.every((user) => user.email !== value);
+          }),
+        password: Yup.string()
+          .min(8, "Password must be at least 8 characters")
+          .matches(
+            /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+            "Password must contain at least one letter, one number, and one special character"
+          )
+          .required("Required"),
+        confirmPassword: Yup.string()
+          .oneOf([Yup.ref("password"), null], "Passwords must match")
+          .required("Required"),
         firstName: Yup.string()
           .max(15, "Must be 15 characters or less")
           .required("Required"),
         lastName: Yup.string()
           .max(20, "Must be 20 characters or less")
           .required("Required"),
-        email: Yup.string().email("Invalid email address").required("Required"),
+        birthDate: Yup.date()
+          .max(new Date(), "Birth date must be in the past")
+          .required("Required"),
       })}
       onSubmit={(values, { setSubmitting }) => {
         setTimeout(() => {
-          alert(JSON.stringify(values, null, 2));
-          setSubmitting(false);
-        }, 400);
+          userService
+            .create(values)
+            .then((users) => {
+              console.log("User created successfully:", users);
+              setSubmitting(false);
+            })
+            .catch((error) => {
+              console.error("Error creating user:", error);
+              setSubmitting(false);
+            });
+        }, 2000); // Simulating a delay of 2 seconds
       }}
     >
       <Form className="flex flex-col w-2/4 p-10 bg-teal-400 rounded-md gap-8 border-emerald-900 border-4">
@@ -109,18 +137,16 @@ const SignUpForm = () => {
 
         <div className="flex flex-col gap-2">
           {fields.map((field) => {
-            return <FormField {...field} />;
+            return <FormField key={field.name} {...field} />;
           })}
         </div>
 
-        {complete && (
-          <button
-            type="submit"
-            className="rounded-lg bg-teal-900 py-4 text-teal-50 font-extrabold shadow-lg"
-          >
-            Submit
-          </button>
-        )}
+        <button
+          type="submit"
+          className="rounded-lg bg-teal-900 py-4 text-teal-50 font-extrabold shadow-lg"
+        >
+          Submit
+        </button>
       </Form>
     </Formik>
   );
