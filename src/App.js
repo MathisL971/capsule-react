@@ -1,10 +1,20 @@
 import SignUpForm from "./components/SignUpForm";
+import LoginForm from "./components/LoginForm";
+
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 function App() {
   return (
-    <div className="flex flex-row justify-center py-14">
-      <SignUpForm></SignUpForm>
-    </div>
+    <Router>
+      {/* <div>
+        <Link to="/signup">sign up</Link>
+        <Link to="/login">login</Link>
+      </div> */}
+      <Routes>
+        <Route path="/signup" element={<SignUpForm />} />
+        <Route path="/login" element={<LoginForm />} />
+      </Routes>
+    </Router>
   );
 }
 

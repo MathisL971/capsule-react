@@ -49,6 +49,18 @@ app.post("/api/users", (request, response) => {
   response.status(200).json(users);
 });
 
+app.post("/api/login", (request, response) => {
+  const { username, password } = request.body;
+  const user = users.find(
+    (u) => u.username === username && u.password === password
+  );
+  if (user) {
+    response.status(200).json(user);
+  } else {
+    response.status(401).send("Username or password does not exist");
+  }
+});
+
 const PORT = 3001;
 app.listen(PORT);
 console.log(`Server running on port ${PORT}`);

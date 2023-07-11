@@ -6,6 +6,7 @@ import FormField from "./FormField";
 import { Formik, Form } from "formik";
 import moment from "moment-timezone";
 import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 const SignUpForm = () => {
   const fields = [
@@ -59,6 +60,8 @@ const SignUpForm = () => {
       }),
     },
   ];
+
+  const navigate = useNavigate();
 
   return (
     <Formik
@@ -125,7 +128,7 @@ const SignUpForm = () => {
         }, 2000); // Simulating a delay of 2 seconds
       }}
     >
-      <Form className="flex flex-col w-2/4 p-10 bg-teal-400 rounded-md gap-8 border-emerald-900 border-4">
+      <Form className="flex flex-col w-2/4 h-min p-10 m-auto bg-teal-400 rounded-md gap-8 border-emerald-900 border-4">
         <div className="flex flex-col gap-3">
           <h1 className="text-5xl text-teal-950 font-extrabold">
             Welcome to Capsule!
@@ -147,6 +150,12 @@ const SignUpForm = () => {
         >
           Submit
         </button>
+        <p className="text-center font-medium">
+          Already have an account?{" "}
+          <button onClick={() => navigate("/login")}>
+            <u>Login here!</u>
+          </button>{" "}
+        </p>
       </Form>
     </Formik>
   );
